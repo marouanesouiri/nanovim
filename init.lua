@@ -20,9 +20,4 @@ require("settings.autoCommands")
 require("settings.statusline")
 
 -- load the keybinds
-require("keybinds.global")
-require("keybinds.normal")
-require("keybinds.insert")
-require("keybinds.command")
-require("keybinds.visual")
-require("keybinds.visual_block")
+require("keybinds")
