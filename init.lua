@@ -16,7 +16,5 @@ require("plugins.init")
 require("settings.options")
 -- load Autocommands
 require("settings.autoCommands")
--- load the status line
-require("settings.statusline")
 -- load the keybinds
 require("settings.keybinds")
