@@ -9,7 +9,7 @@ return { -- oil.nvim
 		vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 		require("oil").setup({
 			-- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
-			-- Set to false if you still want to use netrw.
+			-- Set to false if you want some other plugin (e.g. netrw) to open when you edit directories.
 			default_file_explorer = true,
 			-- Id is automatically added at the beginning, and name at the end
 			-- See :help oil-columns
@@ -36,7 +36,7 @@ return { -- oil.nvim
 				concealcursor = "nvic",
 			},
 			-- Send deleted files to the trash instead of permanently deleting them (:help oil-trash)
-			delete_to_trash = true,
+			delete_to_trash = false,
 			-- Skip the confirmation popup for simple operations (:help oil.skip_confirm_for_simple_edits)
 			skip_confirm_for_simple_edits = false,
 			-- Selecting a new/moved/renamed file or directory will prompt you to save changes first
@@ -47,6 +47,8 @@ return { -- oil.nvim
 			-- Note that the cleanup process only starts when none of the oil buffers are currently displayed
 			cleanup_delay_ms = 2000,
 			lsp_file_methods = {
+				-- Enable or disable LSP file operations
+				enabled = true,
 				-- Time to wait for LSP file operations to complete before skipping
 				timeout_ms = 1000,
 				-- Set to true to autosave buffers that are updated with LSP willRenameFiles
@@ -57,7 +59,7 @@ return { -- oil.nvim
 			-- Set to `false` to disable, or "name" to keep it on the file names
 			constrain_cursor = "editable",
 			-- Set to true to watch the filesystem for changes and reload oil
-			experimental_watch_for_changes = false,
+			watch_for_changes = false,
 			-- Keymaps in oil buffer. Can be any value that `vim.keymap.set` accepts OR a table of keymap
 			-- options with a `callback` (e.g. { callback = function() ... end, desc = "", mode = "n" })
 			-- Additionally, if it is a string that matches "actions.<name>",
@@ -67,24 +69,33 @@ return { -- oil.nvim
 			keymaps = {
 				["g?"] = "actions.show_help",
 				["<CR>"] = "actions.select",
-				["<C-s>"] = "actions.select_vsplit",
-				["<C-h>"] = "actions.select_split",
-				["<C-t>"] = "actions.select_tab",
+				["<C-s>"] = {
+					"actions.select",
+					opts = { vertical = true },
+					desc = "Open the entry in a vertical split",
+				},
+				["<C-h>"] = {
+					"actions.select",
+					opts = { horizontal = true },
+					desc = "Open the entry in a horizontal split",
+				},
+				["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
 				["<C-p>"] = "actions.preview",
 				["<C-c>"] = "actions.close",
 				["<C-l>"] = "actions.refresh",
 				["-"] = "actions.parent",
 				["_"] = "actions.open_cwd",
 				["`"] = "actions.cd",
-				["~"] = "actions.tcd",
+				["~"] = {
+					"actions.cd",
+					opts = { scope = "tab" },
+					desc = ":tcd to the current oil directory",
+					mode = "n",
+				},
 				["gs"] = "actions.change_sort",
 				["gx"] = "actions.open_external",
 				["g."] = "actions.toggle_hidden",
 				["g\\"] = "actions.toggle_trash",
-			},
-			-- Configuration for the floating keymaps help window
-			keymaps_help = {
-				border = "rounded",
 			},
 			-- Set to false to disable all of the above keymaps
 			use_default_keymaps = true,
@@ -102,12 +113,29 @@ return { -- oil.nvim
 				-- Sort file names in a more intuitive order for humans. Is less performant,
 				-- so you may want to set to false if you work with large directories.
 				natural_order = true,
+				-- Sort file and directory names case insensitive
+				case_insensitive = false,
 				sort = {
 					-- sort order can be "asc" or "desc"
 					-- see :help oil-columns to see which columns are sortable
 					{ "type", "asc" },
 					{ "name", "asc" },
 				},
+			},
+			-- Extra arguments to pass to SCP when moving/copying files over SSH
+			extra_scp_args = {},
+			-- EXPERIMENTAL support for performing file operations with git
+			git = {
+				-- Return true to automatically git add/mv/rm files
+				add = function(path)
+					return false
+				end,
+				mv = function(src_path, dest_path)
+					return false
+				end,
+				rm = function(path)
+					return false
+				end,
 			},
 			-- Configuration for the floating window in oil.open_float
 			float = {
@@ -119,6 +147,10 @@ return { -- oil.nvim
 				win_options = {
 					winblend = 0,
 				},
+				-- optionally override the oil buffers window title with custom function: fun(winid: integer): string
+				get_win_title = nil,
+				-- preview_split: Split direction: "auto", "left", "right", "above", "below".
+				preview_split = "auto",
 				-- This is the config that will be passed to nvim_open_win.
 				-- Change values here to customize the layout
 				override = function(conf)
@@ -166,6 +198,10 @@ return { -- oil.nvim
 			},
 			-- Configuration for the floating SSH window
 			ssh = {
+				border = "rounded",
+			},
+			-- Configuration for the floating keymaps help window
+			keymaps_help = {
 				border = "rounded",
 			},
 		})
