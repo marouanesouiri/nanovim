@@ -54,6 +54,9 @@ key("t", "<cmd>b#<CR>", "Buffer Recent")
 -- HEAD: undo tree
 key("<leader>tu", "<cmd>UndotreeToggle<CR>", "Toggle Undotree")
 
+-- HEAD: copy buffer
+key("yu", "gg0vG$y", "Copy the buffer")
+
 -- HEAD: Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --  See `:help wincmd` for a list of all window commands
@@ -71,6 +74,9 @@ end, "Next todo comment")
 key("[t", function()
 	todo.jump_prev()
 end, "Previous todo comment")
+
+-- HEAD: formatter keymaps
+key("<C-r>", ":!", "Run command")
 
 -- HEAD: formatter keymaps
 key("<leader>F", function()
