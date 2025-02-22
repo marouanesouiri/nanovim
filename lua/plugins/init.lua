@@ -9,7 +9,7 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure and install plugins ]]
 -- NOTE: Here is where you install your plugins.
-require("lazy").setup("plugins.plugins", {
+require("lazy").setup("plugins", {
 	root = vim.fn.stdpath("data") .. "/lazy", -- directory where plugins will be installed
 	defaults = {
 		lazy = false, -- should plugins be lazy-loaded?
@@ -183,3 +183,4 @@ require("lazy").setup("plugins.plugins", {
 		require = false,
 	},
 })
+return {}
