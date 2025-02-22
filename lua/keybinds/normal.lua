@@ -47,7 +47,9 @@ key("<S-u>", "<C-r>", "Just redu")
 
 -- HEAD: buffer prev/next key maps
 key("<leader>bb", "<cmd>bp<CR>", "Buffer Previous")
+key("[b", "<cmd>bp<CR>", "Buffer Previous")
 key("<leader>bn", "<cmd>bn<CR>", "Buffer Next")
+key("]b", "<cmd>bn<CR>", "Buffer Next")
 key("<leader>br", "<cmd>b#<CR>", "Buffer Recent")
 key("t", "<cmd>b#<CR>", "Buffer Recent")
 
