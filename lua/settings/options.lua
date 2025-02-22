@@ -94,3 +94,5 @@ vim.opt.termguicolors = true
 
 -- remove the commands input place
 -- vim.opt.cmdheight = 0
+
+vim.env.TERM = "xterm-256color"
