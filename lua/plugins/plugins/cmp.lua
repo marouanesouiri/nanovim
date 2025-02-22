@@ -2,32 +2,15 @@ return { -- Autocompletion
 	"hrsh7th/nvim-cmp",
 	event = "InsertEnter",
 	dependencies = {
-		{ -- snippets
-			"L3MON4D3/LuaSnip",
-		},
-
-		{ -- cmp_luasnip
-			"saadparwaiz1/cmp_luasnip",
-		},
-
-		{ -- cmp nvim lsp
-			"hrsh7th/cmp-nvim-lsp",
-		},
-
-		{ -- cpm path
-			"hrsh7th/cmp-path",
-		},
+		"saadparwaiz1/cmp_luasnip", -- cmp_luasnip
+		"onsails/lspkind.nvim", -- cmp_nvim_lsp
+		"hrsh7th/cmp-nvim-lsp", -- cmp nvim lsp
+		"hrsh7th/cmp-path", -- cpm path
+		"hrsh7th/cmp-calc", -- cmp calc
 	},
 	config = function()
 		local cmp = require("cmp")
-		if not cmp then
-			return
-		end
-
 		local luasnip = require("luasnip")
-		if not luasnip then
-			return
-		end
 
 		local symbols = {
 			Text = "󰉿",
@@ -126,6 +109,14 @@ return { -- Autocompletion
 					end,
 				}),
 			},
+			window = {
+				documentation = {
+					winhighlight = 'Normal:Pmenu,FloatBorder:Pmenu,Search:None'
+				},
+				completion = {
+					winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+				},
+			},
 			formatting = {
 				fields = { "abbr", "kind", "menu" },
 				expandable_indicator = true,
@@ -140,10 +131,6 @@ return { -- Autocompletion
 				expand = function(args)
 					luasnip.lsp_expand(args.body)
 				end,
-			},
-			window = {
-				completion = cmp.config.window.bordered(),
-				documentation = cmp.config.window.bordered(),
 			},
 		})
 	end,
