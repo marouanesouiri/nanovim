@@ -8,7 +8,7 @@ return { -- Autoformat
 			formatters_by_ft = {
 				go = { "goimports", "gofmt" },
 				rust = { "rustfmt" },
-				c = { "clangd" },
+				c = { "clang-format" },
 				lua = { "stylua" },
 				python = { "black" },
 				javascript = { { "prettierd", "prettier" } },
