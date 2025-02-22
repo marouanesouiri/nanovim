@@ -57,6 +57,16 @@ return { -- LSP Configuration & Plugins
 				-- or a suggestion from your LSP for this to activate.
 				map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
 
+				-- Import missing items in the current buffer
+				map("<leader>ci", function()
+					vim.lsp.buf.code_action({
+						context = {
+							only = { "source.addMissingImports" },
+					},
+						apply = true,
+				})
+				end, "Import missing items in the current buffer")
+
 				-- Opens a popup that displays documentation about the word under your cursor
 				--  See `:help K` for why this keymap.
 				map("K", vim.lsp.buf.hover, "Hover Documentation")
