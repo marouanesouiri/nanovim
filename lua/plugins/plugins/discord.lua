@@ -66,7 +66,7 @@ return {
 			},
 			{
 				label = "View Config",
-				url = "https://github.com/aphlatonn/nanovim",
+				url = "https://github.com/5rdala/nanovim",
 				url = function(opts)
 					if not opts.is_idle then return opts.repo_url end
 				end
