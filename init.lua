@@ -18,6 +18,5 @@ require("settings.options")
 require("settings.autoCommands")
 -- load the status line
 require("settings.statusline")
-
 -- load the keybinds
-require("keybinds")
+require("settings.keybinds")
