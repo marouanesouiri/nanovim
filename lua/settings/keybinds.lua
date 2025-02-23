@@ -76,9 +76,6 @@ vim.keymap.set("n", "[t", function()
   todo.jump_prev()
 end, { desc = "Previous todo comment" })
 
--- formatter keymaps
-vim.keymap.set("n", "<C-r>", ":!", { desc = "Run command" })
-
 vim.keymap.set("n", "<leader>F", function()
   require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "Format buffer" })
