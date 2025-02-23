@@ -5,9 +5,7 @@ vim.keymap.set("", "<Leader>p", '"+p', { desc = "Paste from system clipboard" })
 vim.keymap.set("", "<Leader>y", '"+y', { desc = "Yank to system clipboard" }) -- Yank
 -- Copy entire buffer to clipboard
 vim.keymap.set("", "<Leader>yu", 'gg0vG$"+y', { desc = "Copy the buffer to system clipboard" })
-
 --  HEAD: Normal mode keybinds.
-
 --  remove the highlighting from the search mode
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
@@ -87,29 +85,26 @@ end, { desc = "Format buffer" })
 
 -- harpoon
 local harpoon = require("harpoon")
-vim.keymap.set("n", "<C-e>", function()
-  harpoon:list():add()
+vim.keymap.set("n", "<C-e>", function() harpoon:list():add()
 end, { desc = "Add to harpoon" })
 
-vim.keymap.set("n", "gh", function()
-  harpoon.ui:toggle_quick_menu(harpoon:list())
+vim.keymap.set("n", "gh", function() harpoon.ui:toggle_quick_menu(harpoon:list())
 end, { desc = "Toggle harpoon menu" })
 
-vim.keymap.set("n", "g1", function()
-  harpoon:list():select(1)
+vim.keymap.set("n", "g1", function() harpoon:list():select(1)
 end, { desc = "Select harpoon 1" })
 
-vim.keymap.set("n", "g2", function()
-  harpoon:list():select(2)
+vim.keymap.set("n", "g2", function() harpoon:list():select(2)
 end, { desc = "Select harpoon 2" })
 
-vim.keymap.set("n", "3", function()
-  harpoon:list():select(3)
+vim.keymap.set("n", "g3", function() harpoon:list():select(3)
 end, { desc = "Select harpoon 3" })
 
-vim.keymap.set("n", "4", function()
-  harpoon:list():select(4)
+vim.keymap.set("n", "g4", function() harpoon:list():select(4)
 end, { desc = "Select harpoon 4" })
+
+-- open compile mode
+vim.keymap.set("n", "<leader>x", ":Compile ", { desc = "Open compile mode" })
 
 --  HEAD: Visual mode keybinds.
 
