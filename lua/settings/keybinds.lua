@@ -104,7 +104,7 @@ vim.keymap.set("n", "g4", function() harpoon:list():select(4)
 end, { desc = "Select harpoon 4" })
 
 -- open compile mode
-vim.keymap.set("n", "<leader>x", ":Compile ", { desc = "Open compile mode" })
+vim.keymap.set("n", "<leader>j", ":Compile ", { desc = "Open compile mode" })
 
 --  HEAD: Visual mode keybinds.
 
