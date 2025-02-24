@@ -66,6 +66,28 @@ vim.keymap.set("n", "<C-Right>", "<C-w><C-l>", { desc = "Move focus to the right
 vim.keymap.set("n", "<C-Down>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-Up>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
+-- Bind Ctrl+w+r  to enter resize mode
+vim.keymap.set("n", "<C-w>r", function()
+  print("-- RESIZE --")
+  local opts = { noremap = true, silent = true, buffer = true }
+
+  -- Resize with h/j/k/l
+  vim.keymap.set("n", "h", ":vertical resize -1<CR>", opts)
+  vim.keymap.set("n", "l", ":vertical resize +1<CR>", opts)
+  vim.keymap.set("n", "k", ":resize +1<CR>", opts)
+  vim.keymap.set("n", "j", ":resize -1<CR>", opts)
+
+  -- Exit resize mode with Escape
+  vim.keymap.set("n", "<Esc>", function()
+    print(" ")
+    vim.api.nvim_buf_del_keymap(0, "n", "h")
+    vim.api.nvim_buf_del_keymap(0, "n", "l")
+    vim.api.nvim_buf_del_keymap(0, "n", "k")
+    vim.api.nvim_buf_del_keymap(0, "n", "j")
+    vim.api.nvim_buf_del_keymap(0, "n", "<Esc>")
+  end, opts)
+end, { desc = "Enter Resize Mode" })
+
 -- todo comments keymaps
 local todo = require("todo-comments")
 vim.keymap.set("n", "]t", function()
@@ -95,6 +117,29 @@ end
 
 -- open compile mode
 vim.keymap.set("n", "<leader>j", ":Compile ", { desc = "Open compile mode" })
+
+-- Replace the word under the cursor
+vim.keymap.set("n", "gr", function()
+  local word = vim.fn.expand("<cword>")
+  local new_word = vim.fn.input("Replace with: ") 
+  if new_word ~= "" then
+    local save_cursor = vim.fn.getpos(".")
+    vim.cmd("%s/\\<" .. word .. "\\>/" .. new_word .. "/g")
+    vim.fn.setpos(".", save_cursor)
+  end
+end, { desc = "Replace word in buffer" })
+
+-- Replace a word
+vim.keymap.set("n", "<leader>cr", function()
+  local old_word = vim.fn.input("Word to replace: ")
+  if old_word == "" then return end
+
+  local new_word = vim.fn.input("Replace with: ")
+  local save_cursor = vim.fn.getpos(".")
+
+  vim.cmd("%s/\\<" .. old_word .. "\\>/" .. new_word .. "/g")
+  vim.fn.setpos(".", save_cursor)
+end, { desc = "Search and replace in buffer" })
 
 --  HEAD: Visual mode keybinds.
 
