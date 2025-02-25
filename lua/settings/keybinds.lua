@@ -2,6 +2,7 @@ local tbuiltin = require("telescope.builtin")
 local tthemes = require("telescope.themes")
 local harpoon = require("harpoon")
 local todo = require("todo-comments")
+local resizemode = require("resize-mode")
 
 -- Helper function for keybinds
 local function k(mode, key, action, desc)
@@ -11,9 +12,9 @@ end
 -- HEAD: Keybinds for all modes
 
 -- Clipboard operations
-k("", "<Leader>p", '"+p', "Paste from System Clipboard")
-k("", "<Leader>y", '"+y', "Yank to System Clipboard")
-k("", "<Leader>yu", 'gg0vG$"+y', "Copy the Buffer to Clipboard")
+k("", "<leader>p", '"+p', "Paste from System Clipboard")
+k("", "<leader>y", '"+y', "Yank to System Clipboard")
+k("", "<leader>yu", 'gg0vG$"+y', "Copy the Buffer to Clipboard")
 
 -- HEAD: Normal mode keybinds
 
@@ -29,7 +30,7 @@ k("n", "<leader>fr", "<CMD>Telescope resume<CR>", "Resume Search")
 k("n", "<leader>f.", "<CMD>Telescope oldfiles<CR>", "Search Recent Files")
 k("n", "<leader>fb", "<CMD>Telescope buffers<CR>", "Find Buffers")
 k("n", "<leader>ff", "<CMD>Telescope find_files<CR>", "Search Files")
-k("n", "<Leader>ft", "<cmd>TodoTelescope<CR>", "Telescope Todo Marks")
+k("n", "<leader>ft", "<cmd>TodoTelescope<CR>", "Telescope Todo Marks")
 k("n", "<leader>f/", function()
   tbuiltin.current_buffer_fuzzy_find(tthemes.get_dropdown({ winblend = 10, previewer = false }))
 end, "Fuzzily Search in Current Buffer")
@@ -77,26 +78,7 @@ k("n", "<C-Down>", "<C-w><C-j>", "Move Focus Down")
 k("n", "<C-Up>", "<C-w><C-k>", "Move Focus Up")
 
 -- Enter resize mode (Ctrl+w+r)
-k("n", "<C-w>r", function()
-  print("-- RESIZE MODE --")
-  local opts = { noremap = true, silent = true, buffer = true }
-
-  -- Resize bindings
-  vim.keymap.set("n", "h", ":vertical resize -1<CR>", opts)
-  vim.keymap.set("n", "l", ":vertical resize +1<CR>", opts)
-  vim.keymap.set("n", "k", ":resize +1<CR>", opts)
-  vim.keymap.set("n", "j", ":resize -1<CR>", opts)
-
-  -- Exit resize mode with Escape
-  vim.keymap.set("n", "<Esc>", function()
-    print(" ")
-    vim.api.nvim_buf_del_keymap(0, "n", "h")
-    vim.api.nvim_buf_del_keymap(0, "n", "l")
-    vim.api.nvim_buf_del_keymap(0, "n", "k")
-    vim.api.nvim_buf_del_keymap(0, "n", "j")
-    vim.api.nvim_buf_del_keymap(0, "n", "<Esc>")
-  end, opts)
-end, "Enter Resize Mode")
+k("n", "<C-w>r", resizemode.resize_mode, "Enter Resize Mode")
 
 -- Todo comments navigation
 k("n", "]t", function() todo.jump_next() end, "Next Todo Comment")
@@ -126,7 +108,7 @@ k("n", "<leader>cr", function()
 end, "Search and Replace in Buffer")
 
 -- Replace word under cursor
-k("n", "cc", function()
+k("n", "<leader>cc", function()
   local word = vim.fn.expand("<cword>")
   local new_word = vim.fn.input("Replace with: ")
   if new_word ~= "" then
