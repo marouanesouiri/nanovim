@@ -90,8 +90,8 @@ k("n", "<C-Up>", "<C-w><C-k>", "Move Focus Up")
 k("n", "<C-w>r", resizemode.resize_mode, "Enter Resize Mode")
 
 -- Todo comments navigation
-k("n", "]t", function() todo.jump_next() end, "Next Todo Comment")
-k("n", "[t", function() todo.jump_prev() end, "Previous Todo Comment")
+k("n", "[t", "<cmd>tabprevious<CR>", "Goto Previous tab")
+k("n", "]t", "<cmd>tabnext<CR>", "Goto Next tab")
 
 -- Format buffer using conform
 k("n", "<leader>F", function()
