@@ -6,14 +6,14 @@
 
 --  leader key
 vim.g.mapleader = " "
--- second leader key
-vim.g.maplocalleader = vim.api.nvim_replace_termcodes("<BS>", false, false, true)
 
 -- load the plugins
 require("plugins.init")
 
 -- load the options
 require("settings.options")
+-- load the global funcs
+require("settings.globals")
 -- load Autocommands
 require("settings.autoCommands")
 -- load the keybinds
