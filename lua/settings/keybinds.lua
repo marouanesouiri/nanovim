@@ -1,5 +1,5 @@
 local tbuiltin = require("telescope.builtin")
-local tthemes = require("telescope.themes")
+local themes = require("telescope.themes")
 local harpoon = require("harpoon")
 local todo = require("todo-comments")
 local resizemode = require("resize-mode")
@@ -32,7 +32,7 @@ k("n", "<leader>fb", "<CMD>Telescope buffers<CR>", "Find Buffers")
 k("n", "<leader>ff", "<CMD>Telescope find_files<CR>", "Search Files")
 k("n", "<leader>ft", "<cmd>TodoTelescope<CR>", "Telescope Todo Marks")
 k("n", "<leader>f/", function()
-  tbuiltin.current_buffer_fuzzy_find(tthemes.get_dropdown({ winblend = 10, previewer = false }))
+  tbuiltin.current_buffer_fuzzy_find(themes.get_dropdown({ winblend = 10, previewer = false }))
 end, "Fuzzily Search in Current Buffer")
 k("n", "<leader>s/", function()
   tbuiltin.live_grep({ grep_open_files = true, prompt_title = "Live Grep in Open Files" })
@@ -45,8 +45,12 @@ k("n", "<leader>e", vim.diagnostic.open_float, "Show Diagnostic Errors")
 k("n", "<leader>q", vim.diagnostic.setloclist, "Open Diagnostic Quickfix List")
 
 -- Quickfix list cycling
-k("n", "[q", "<cmd>cnext<CR>", "Go to Next in Quickfix List")
-k("n", "]q", "<cmd>cprev<CR>", "Go to Previous in Quickfix List")
+k("n", "[q", "<cmd>cprev<CR>", "Go to Previous in Quickfix List")
+k("n", "]q", "<cmd>cnext<CR>", "Go to Next in Quickfix List")
+
+-- Change page down/up to center the cursor
+k("n", "<C-d>", "<C-d>zz", "Page down")
+k("n", "<C-u>", "<C-u>zz", "Page up")
 
 -- Undo/Redo operations
 k("n", "<S-u>", "<C-r>", "Redo")
@@ -57,10 +61,15 @@ k("n", "<leader>bn", "<cmd>bn<CR>", "Next Buffer")
 k("n", "<leader>br", "<cmd>b#<CR>", "Recent Buffer")
 k("n", "[b", "<cmd>bp<CR>", "Previous Buffer")
 k("n", "]b", "<cmd>bn<CR>", "Next Buffer")
-k("n", "t", "<cmd>b#<CR>", "Recent Buffer")
+k("n", "<BS>", "<cmd>b#<CR>", "Recent Buffer")
 
 -- Undo Tree toggle
 k("n", "<leader>tu", "<cmd>UndotreeToggle<CR>", "Toggle Undo Tree")
+k("n", "<leader>tg", "<cmd>Neogit<CR>", "Toggle Neogit")
+
+-- Gitsigns
+k("n", "<leader>gh", "<cmd>Gitsigns preview_hunk<CR>", "Preview hunk")
+k("n", "<leader>gb", "<cmd>Gitsigns toggle_current_line_blame<CR>", "Toggle line blame")
 
 -- Copy buffer content
 k("n", "yu", "gg0vG$y", "Copy the Buffer")
@@ -136,6 +145,10 @@ k("n", "<leader>ci", function()
 end, "Import Missing Items")
 k("n", "K", vim.lsp.buf.hover, "Hover Documentation")
 
+-- HEAD: Insert mode keybinds
+
+k("i", "<C-k>", vim.lsp.buf.signature_help, "Signature Help")
+
 -- HEAD: Visual mode keybinds
 
 -- Move selected text up or down
@@ -143,3 +156,4 @@ k("v", "J", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
 k("v", "K", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
 k("v", "<S-Up>", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
 k("v", "<S-Down>", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
+
