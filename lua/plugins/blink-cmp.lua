@@ -30,20 +30,17 @@ return {
       ['<CR>'] = { 'select_and_accept', "hide", 'fallback' },
 
       -- {{ keys for scrolling
-      ['<Up>'] = { 'insert_prev', 'fallback' },
-      ['<Down>'] = { 'insert_next', 'fallback' },
+      ['<Up>'] = { 'select_prev', 'fallback' },
+      ['<Down>'] = { 'select_next', 'fallback' },
 
-      ['<Tab>'] = { 'insert_next', 'fallback' },
-      ['<S-Tab>'] = { 'insert_prev', 'fallback' },
+      ['<Tab>'] = { 'select_next', 'fallback' },
+      ['<S-Tab>'] = { 'select_prev', 'fallback' },
 
-      ['<C-j>'] = { 'insert_next', 'fallback' },
-      ['<C-k>'] = { 'insert_prev', 'fallback' },
+      ['<C-j>'] = { 'select_next', 'fallback' },
+      ['<C-k>'] = { 'select_prev', 'fallback' },
       -- }}
 
       -- {{ keys for scrolling in the doc menu
-      ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
-      ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
-
       ['<C-h>'] = { 'scroll_documentation_up', 'fallback' },
       ['<C-l>'] = { 'scroll_documentation_down', 'fallback' },
       -- }}
