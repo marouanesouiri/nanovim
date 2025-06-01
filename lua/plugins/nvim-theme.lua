@@ -8,7 +8,7 @@ return {
 		require("rose-pine").setup({
 			disable_background = true,
 			highlight_groups = {
-				StatusLine = { fg = "love", bg = "love", blend = 10 },
+				StatusLine = { fg = "none", bg = "none", blend = 10 },
 				StatusLineNC = { fg = "subtle", bg = "surface" },
 				CurSearch = { fg = "base", bg = "leaf", inherit = false },
 				Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
