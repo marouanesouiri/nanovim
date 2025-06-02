@@ -19,6 +19,8 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
+vim.opt.updatetime = 250
+vim.opt.timeoutlen = 200
 --}}
 
 --{{ THEMING:
@@ -74,6 +76,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 --{{ KEYMAPS:
 vim.g.mapleader = " "
+vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 local function k(mode, key, action, desc)
   vim.keymap.set(mode, key, action, { desc = desc })
@@ -117,4 +120,3 @@ k("n", "<leader>tu", "<cmd>UndotreeToggle<CR><cmd>UndotreeFocus<CR>", "Toggle un
 k("v", "J", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
 k("v", "K", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
 --}}
-
