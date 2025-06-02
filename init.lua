@@ -36,6 +36,21 @@ if not vim.loop.fs_stat(mini_path) then
   vim.cmd('packadd mini.nvim | helptags ALL')
 end
 require('mini.deps').setup({ path = { package = path_package } })
+
+-- Instalation
+MiniDeps.add("nvim-treesitter/nvim-treesitter")
+MiniDeps.add("folke/snacks.nvim")
+
+-- Configutation
+require("mini.icons").setup()
+require("nvim-treesitter").setup({
+    auto_install = true,
+    highlight = { enable = true },
+    indent = { enable = true },
+})
+require("snacks").setup({
+    picker = { enabled = true },
+})
 --}}
 
 --{{ KEYMAPS:
@@ -50,6 +65,8 @@ k("", "<leader>p", '"+p', "Paste from System Clipboard")
 k("", "<leader>yu", 'gg0vG$"+y', "Copy the Buffer to Clipboard")
 
 k("n", "<Esc>", "<cmd>nohlsearch<CR>", "Remove Search Highlighting")
+
+k("n", "-", "<cmd>Explore<CR>", "Open Netrw")
 
 k("n", "[q", "<cmd>cprev<CR>", "Go to Previous in Quickfix List")
 k("n", "]q", "<cmd>cnext<CR>", "Go to Next in Quickfix List")
@@ -69,6 +86,11 @@ k("n", "<C-j>", "<C-w><C-j>", "Focus Down")
 k("n", "<C-k>", "<C-w><C-k>", "Focus Up")
 
 k("n", "<leader><leader>", ":find ", "Find files")
+
+k("n", "<leader>ff", require("snacks").picker.files, "Find file")
+k("n", "<leader>fb", require("snacks").picker.buffers, "Find buffer")
+k("n", "<leader>fg", require("snacks").picker.grep, "Find by grep")
+k("n", "<leader>fp", require("snacks").picker.projects, "Find project")
 
 k("v", "J", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
 k("v", "K", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
