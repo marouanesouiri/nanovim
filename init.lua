@@ -59,6 +59,28 @@ require("snacks").setup({
 require("neogit").setup()
 --}}
 
+--{{ LSP:
+-- configuration
+vim.diagnostic.config({ virtual_text = true })
+
+-- go lang
+vim.lsp.config = {
+    ['gopls'] = {
+        cmd = { "gopls" },
+        filetypes = { "go", "gomod", "gowork", "gotmpl" },
+        root_markers = { "go.mod", "go.work", ".git" }
+    },
+    ['clangd'] = {
+        cmd = { 'clangd' },
+        root_markers = { '.clangd', '.clang-format', '.git' },
+        filetypes = { 'c', 'cpp' },
+    },
+}
+for k in pairs(vim.lsp.config) do
+    vim.lsp.enable(k)
+end
+--}}
+
 --{[ AUTOCOMMANDS:
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking text",
@@ -71,6 +93,15 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.keymap.set("n", "w", "<C-^>", { buffer = true, desc = "Close Netrw" })
   end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
+	callback = function(args)
+        vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { buffer = args.buf, desc = "Go to definition" })
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf, desc = "Go to definition" })
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf, desc = "Go to declaration" })
+    end,
 })
 --}}
 
