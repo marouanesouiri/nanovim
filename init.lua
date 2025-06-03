@@ -21,10 +21,11 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 200
+vim.opt.completeopt = "menu,menuone,popup,noselect"
 --}}
 
 --{{ THEMING:
-vim.cmd("colorscheme habamax")
+vim.cmd("colorscheme wildcharm")
 --}}
 
 --{{ PLUGINS:
@@ -96,11 +97,45 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
-	callback = function(args)
+    group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
+    callback = function(args)
+        local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
         vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { buffer = args.buf, desc = "Go to definition" })
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf, desc = "Go to definition" })
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf, desc = "Go to declaration" })
+
+        if client:supports_method('textDocument/completion') then
+            vim.lsp.completion.enable(true, client.id, args.buf, {autotrigger = true})
+        end
+
+        vim.api.nvim_create_autocmd('InsertCharPre', {
+            group = vim.api.nvim_create_augroup('aggressive-completion', { clear = true }),
+            callback = function()
+                if vim.v.char == ' ' or vim.v.char == '\t' then
+                    return
+                end
+
+                if #vim.lsp.get_clients({ bufnr = 0 }) > 0 then
+                    vim.defer_fn(function()
+                        if vim.fn.pumvisible() == 0 and vim.fn.mode() == 'i' then
+                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-x><C-o>', true, false, true), 'n', false)
+                        end
+                    end, 50)
+                end
+            end,
+        })
+
+        if not client:supports_method('textDocument/willSaveWaitUntil')
+            and client:supports_method('textDocument/formatting') then
+            vim.api.nvim_create_autocmd('BufWritePre', {
+                group = vim.api.nvim_create_augroup('lsp-attach', { clear = false }),
+                buffer = args.buf,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
+                end,
+            })
+        end
     end,
 })
 --}}
@@ -109,8 +144,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.g.mapleader = " "
 vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
-local function k(mode, key, action, desc)
-  vim.keymap.set(mode, key, action, { desc = desc })
+local function k(mode, key, action, desc, expr)
+  vim.keymap.set(mode, key, action, { desc = desc, expr = expr or false })
 end
 
 k("", "<leader>y", '"+y', "Yank to System Clipboard")
@@ -147,6 +182,10 @@ k("n", "<leader>fp", require("snacks").picker.projects, "Find project")
 
 k("n", "<leader>tg", "<cmd>Neogit<CR>", "Toggle neogit")
 k("n", "<leader>tu", "<cmd>UndotreeToggle<CR><cmd>UndotreeFocus<CR>", "Toggle undotree")
+
+k('i', '<C-space>', vim.lsp.completion.get, "Toggle completion menu")
+k("i", '<Tab>',   [[pumvisible() ? "\<C-n>" : "\<Tab>"]], "Go down in completion menu", true)
+k("i", '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], "Go up in completion menu", true)
 
 k("v", "J", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
 k("v", "K", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
