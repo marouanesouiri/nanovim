@@ -82,7 +82,7 @@ vim.lsp.config = {
     ['rust_analyzer'] = {
         cmd = { 'rust-analyzer' },
         root_markers = { 'Cargo.toml', '.git' },
-        filetypes = { 'rs' },
+        filetypes = { 'rust' },
     },
     ['clangd'] = {
         cmd = { 'clangd' },
@@ -93,6 +93,11 @@ vim.lsp.config = {
         cmd = { 'jdtls' },
         root_markers = { "build.gradle", "build.gradle.kts", "pom.xml", ".git" },
         filetypes = { 'java' },
+    },
+    ['ts_ls'] = {
+        cmd = { "typescript-language-server", "--stdio" },
+        root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+        filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
     },
 }
 for k in pairs(vim.lsp.config) do
@@ -207,6 +212,7 @@ k("i", '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], "Go down in completion m
 k("i", '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], "Go up in completion menu", true)
 k("i", '<C-j>', [[pumvisible() ? "\<C-n>" : "\<C-j>"]], "Go down in completion menu", true)
 k("i", '<C-k>', [[pumvisible() ? "\<C-p>" : "\<C-k>"]], "Go up in completion menu", true)
+k("i", '<CR>', [[pumvisible() ? "\<C-y>" : "\<CR>"]], "Accept selected item in completion menu", true)
 
 k("v", "J", ":m '>+1<CR>gv=gv", "Move Selected Text Down")
 k("v", "K", ":m '<-2<CR>gv=gv", "Move Selected Text Up")
