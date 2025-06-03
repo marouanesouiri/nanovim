@@ -1,3 +1,3 @@
 ## ⚡️ Requirements
 
-- **Neovim** >= 0.9.4
+- **Neovim** >= 0.11.2
