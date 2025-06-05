@@ -197,15 +197,21 @@ k("n", "[b", "<cmd>bp<CR>", "Buffer Previous")
 k("n", "]b", "<cmd>bn<CR>", "Buffer Next")
 k("n", "<BS>", "<cmd>b#<CR>", "Buffer Recent")
 
+k("n", "[t", "<cmd>tabprev<CR>", "Go to Previous Tab")
+k("n", "]t", "<cmd>tabnext<CR>", "Go to Next Tab")
+
 k("n", "<leader><leader>", ":find ", "Find files")
 
 k("n", "<leader>ff", require("snacks").picker.files, "Find file")
 k("n", "<leader>fb", require("snacks").picker.buffers, "Find buffer")
 k("n", "<leader>fg", require("snacks").picker.grep, "Find by grep")
 k("n", "<leader>fp", require("snacks").picker.projects, "Find project")
+k("n", "<leader>fd", require("snacks").picker.diagnostics, "Find diagnostics")
 
 k("n", "<leader>tg", "<cmd>Neogit<CR>", "Toggle neogit")
 k("n", "<leader>tu", "<cmd>UndotreeToggle<CR><cmd>UndotreeFocus<CR>", "Toggle undotree")
+
+k("n", "<leader>we", "<cmd>e!<CR>", "Reloads current file from disk")
 
 k('i', '<C-space>', vim.lsp.completion.get, "Toggle completion menu")
 k("i", '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], "Go down in completion menu", true)
