@@ -23,7 +23,8 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 200
-vim.opt.completeopt = "menu,menuone,popup,noselect"
+-- vim.opt.completeopt = "menu,menuone,popup,noselect"
+vim.opt.winborder = 'rounded'
 --}}
 
 --{{ PLUGINS:
@@ -112,13 +113,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     callback = function() vim.highlight.on_yank() end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "netrw",
-    callback = function()
-        vim.keymap.set("n", "w", "<C-^>", { buffer = true, desc = "Close Netrw" })
-    end,
-})
-
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
     callback = function(args)
@@ -127,38 +121,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { buffer = args.buf, desc = "Go to definition" })
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = args.buf, desc = "Go to definition" })
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf, desc = "Go to declaration" })
-
-        if client:supports_method('textDocument/completion') then
-            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
-        end
-
-        vim.api.nvim_create_autocmd('InsertCharPre', {
-            group = vim.api.nvim_create_augroup('aggressive-completion', { clear = true }),
-            callback = function()
-                if vim.v.char == ' ' or vim.v.char == '\t' then
-                    return
-                end
-
-                if #vim.lsp.get_clients({ bufnr = 0 }) > 0 then
-                    vim.defer_fn(function()
-                        if vim.fn.pumvisible() == 0 and vim.fn.mode() == 'i' then
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-x><C-o>', true, false, true), 'n',
-                                false)
-                        end
-                    end, 50)
-                end
-            end,
+        vim.keymap.set("n", "gF", function()
+            vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
+        end, { buffer = args.buf, desc = "Go to declaration"
         })
 
-        if not client:supports_method('textDocument/willSaveWaitUntil')
-            and client:supports_method('textDocument/formatting') then
-            vim.api.nvim_create_autocmd('BufWritePre', {
-                group = vim.api.nvim_create_augroup('lsp-attach', { clear = false }),
-                buffer = args.buf,
-                callback = function()
-                    vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
-                end,
-            })
+        if client:supports_method('textDocument/completion') then
+            vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'fuzzy', 'popup' }
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+            vim.keymap.set('i', '<C-Space>', vim.lsp.completion.get)
         end
     end,
 })
@@ -202,7 +173,7 @@ k("n", "]t", "<cmd>tabnext<CR>", "Go to Next Tab")
 
 k("n", "<leader><leader>", ":find ", "Find files")
 
-k("n", "<leader>ff", require("snacks").picker.files, "Find file")
+k("n", "<leader>ff", function() require("snacks").picker.files({ layout = "select" }) end, "Find file")
 k("n", "<leader>fb", require("snacks").picker.buffers, "Find buffer")
 k("n", "<leader>fg", require("snacks").picker.grep, "Find by grep")
 k("n", "<leader>fp", require("snacks").picker.projects, "Find project")
@@ -213,7 +184,6 @@ k("n", "<leader>tu", "<cmd>UndotreeToggle<CR><cmd>UndotreeFocus<CR>", "Toggle un
 
 k("n", "<leader>we", "<cmd>e!<CR>", "Reloads current file from disk")
 
-k('i', '<C-space>', vim.lsp.completion.get, "Toggle completion menu")
 k("i", '<Tab>', [[pumvisible() ? "\<C-n>" : "\<Tab>"]], "Go down in completion menu", true)
 k("i", '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], "Go up in completion menu", true)
 k("i", '<C-j>', [[pumvisible() ? "\<C-n>" : "\<C-j>"]], "Go down in completion menu", true)
