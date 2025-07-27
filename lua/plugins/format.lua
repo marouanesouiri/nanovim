@@ -11,7 +11,7 @@ return { -- Autoformat
 				c = { "clang-format" },
 				lua = { "stylua" },
 				python = { "black" },
-				javascript = { { "prettierd", "prettier" } },
+				javascript = { "prettierd", "prettier" },
 				-- Use the "*" filetype to run formatters on all filetypes.
 				["*"] = { "codespell" },
 				-- Use the "_" filetype to run formatters on filetypes that don't
