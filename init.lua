@@ -62,6 +62,7 @@ require("neogit").setup()
 
 --{{ THEMING:
 vim.cmd("colorscheme rose-pine")
+vim.cmd("hi statusline guibg=NONE")
 --}}
 
 --{{ LSP:
@@ -109,12 +110,10 @@ end
 --{[ AUTOCOMMANDS:
 vim.api.nvim_create_autocmd("TextYankPost", {
     desc = "Highlight when yanking text",
-    group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
     callback = function() vim.highlight.on_yank() end,
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
     callback = function(args)
         local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
 
@@ -123,7 +122,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = args.buf, desc = "Go to declaration" })
         vim.keymap.set("n", "gF", function()
             vim.lsp.buf.format({ bufnr = args.buf, id = client.id, timeout_ms = 1000 })
-        end, { buffer = args.buf, desc = "Go to declaration"
+        end, { buffer = args.buf, desc = "Format buffer"
         })
 
         if client:supports_method('textDocument/completion') then
