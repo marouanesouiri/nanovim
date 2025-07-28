@@ -4,7 +4,7 @@
 vim.opt.mouse = "i"
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.list = true
@@ -23,7 +23,6 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 200
--- vim.opt.completeopt = "menu,menuone,popup,noselect"
 vim.opt.winborder = 'rounded'
 --}}
 
@@ -40,7 +39,7 @@ end
 require('mini.deps').setup({ path = { package = path_package } })
 
 -- instalation
-MiniDeps.add({ source = "rose-pine/neovim", as = "rose-pine" })
+MiniDeps.add({ source = "vague2k/vague.nvim", as = "vague" })
 MiniDeps.add("nvim-treesitter/nvim-treesitter")
 MiniDeps.add("folke/snacks.nvim")
 MiniDeps.add("nvim-lua/plenary.nvim") -- required by neogit
@@ -48,63 +47,29 @@ MiniDeps.add({ source = "neogitorg/neogit", checkout = "028e9ee" })
 MiniDeps.add("mbbill/undotree")
 
 -- configutation
-require("mini.icons").setup()
 require("nvim-treesitter.configs").setup({
     auto_install = true,
     highlight = { enable = true },
     indent = { enable = true },
 })
-require("snacks").setup({
-    picker = { enabled = true },
-})
+require("snacks").setup({ picker = { enabled = true }, })
 require("neogit").setup()
 --}}
 
 --{{ THEMING:
-vim.cmd("colorscheme rose-pine")
+vim.cmd("colorscheme vague")
 vim.cmd("hi statusline guibg=NONE")
+vim.cmd("highlight Pmenu guibg=#1e1e2e guifg=#cdd6f4")
+vim.cmd("highlight NormalFloat guibg=#181825 guifg=#cdd6f4")
 --}}
 
 --{{ LSP:
--- configuration
 vim.diagnostic.config({ virtual_text = true })
-
--- go lang
-vim.lsp.config = {
-    ['lua_ls'] = {
-        cmd = { "lua-language-server" },
-        filetypes = { "lua" },
-        root_markers = { ".luarc.json", ".luarc.jsonc", ".luacheckrc", ".stylua.toml", "stylua.toml", ".git" },
-    },
-    ['gopls'] = {
-        cmd = { "gopls" },
-        filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_markers = { "go.mod", "go.work", ".git" }
-    },
-    ['rust_analyzer'] = {
-        cmd = { 'rust-analyzer' },
-        root_markers = { 'Cargo.toml', '.git' },
-        filetypes = { 'rust' },
-    },
-    ['clangd'] = {
-        cmd = { 'clangd' },
-        root_markers = { '.clangd', '.clang-format', '.git' },
-        filetypes = { 'c', 'cpp' },
-    },
-    ['jdtls'] = {
-        cmd = { 'jdtls' },
-        root_markers = { "build.gradle", "build.gradle.kts", "pom.xml", ".git" },
-        filetypes = { 'java' },
-    },
-    ['ts_ls'] = {
-        cmd = { "typescript-language-server", "--stdio" },
-        root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
-        filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-    },
-}
-for k in pairs(vim.lsp.config) do
-    vim.lsp.enable(k)
-end
+vim.lsp.enable("lua_ls")
+vim.lsp.enable("gopls")
+vim.lsp.enable("clangd")
+vim.lsp.enable("rust_analyzer")
+vim.lsp.enable("ts_ls")
 --}}
 
 --{[ AUTOCOMMANDS:
@@ -129,6 +94,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'fuzzy', 'popup' }
             vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
             vim.keymap.set('i', '<C-Space>', vim.lsp.completion.get)
+
+            vim.api.nvim_create_autocmd("InsertCharPre", {
+                callback = function()
+                    local char = vim.v.char
+                    if not char:match("%s") then
+                        vim.defer_fn(function()
+                            vim.lsp.completion.get()
+                        end, 0)
+                    end
+                end
+            })
         end
     end,
 })
@@ -165,7 +141,16 @@ k("n", "]q", "<cmd>cnext<CR>", "Go to Next in Quickfix List")
 
 k("n", "[b", "<cmd>bp<CR>", "Buffer Previous")
 k("n", "]b", "<cmd>bn<CR>", "Buffer Next")
-k("n", "<BS>", "<cmd>b#<CR>", "Buffer Recent")
+k("n", "<BS>", function()
+    local alt = vim.fn.bufnr("#")
+    if vim.fn.buflisted(alt) == 1 and vim.bo[alt].filetype ~= "netrw" then
+        vim.cmd("b#")
+    else
+        vim.cmd("bn")
+    end
+end, "Buffer Recent")
+
+
 
 k("n", "[t", "<cmd>tabprev<CR>", "Go to Previous Tab")
 k("n", "]t", "<cmd>tabnext<CR>", "Go to Next Tab")
